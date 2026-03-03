@@ -46,23 +46,16 @@ const MatchCard = ({ match, isLive = false }) => {
             </div>
             <div>
               <div className="font-sporty text-2xl text-white group-hover/team:text-primary-500 transition-colors italic">{match.team1Name}</div>
-              {['volleyball', 'badminton', 'tabletennis', 'tennis'].includes(match.sportId) && (
-                <div className="flex space-x-3 mt-1">
-                  <div className="text-[10px] font-black text-primary-500 uppercase tracking-[0.2em] italic">Sets: {match.sets?.team1 || 0}</div>
-                  {match.sportId === 'tennis' && (
-                    <div className="text-[10px] font-black text-secondary-400 uppercase tracking-[0.2em] italic">Games: {match.games?.team1 || 0}</div>
-                  )}
-                </div>
-              )}
+              {match.sportId === 'volleyball' || match.sportId === 'badminton' || match.sportId === 'tabletennis' ? (
+                <div className="text-[10px] font-black text-primary-500 uppercase tracking-[0.2em] italic mt-1">Sets: {match.sets?.team1 || 0}</div>
+              ) : null}
             </div>
           </div>
           <div className="text-right">
             <div className="text-5xl font-sporty text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] italic">
-              {['volleyball', 'badminton', 'tabletennis'].includes(match.sportId)
+              {match.sportId === 'volleyball' || match.sportId === 'badminton' || match.sportId === 'tabletennis'
                 ? match.currentSetPoints?.team1 || 0
-                : match.sportId === 'tennis'
-                  ? match.currentPoints?.team1 || 0
-                  : match.team1Score}
+                : match.team1Score}
             </div>
             {match.sportId === 'cricket' && match.status === 'live' && (
               <div className="text-[10px] font-black text-gray-500 text-right uppercase tracking-widest italic mt-2">
@@ -78,8 +71,7 @@ const MatchCard = ({ match, isLive = false }) => {
             {match.sportId === 'basketball' && `Q${match.quarter || 1}`}
             {['football', 'hockey', 'kabaddi'].includes(match.sportId) && `HALF ${match.half || 1}`}
             {match.sportId === 'cricket' && `INN. ${match.innings || 1}`}
-            {['volleyball', 'badminton', 'tabletennis', 'tennis'].includes(match.sportId) && `SET ${((match.sets?.team1 || 0) + (match.sets?.team2 || 0)) + 1}`}
-            {!(['basketball', 'football', 'hockey', 'kabaddi', 'cricket', 'volleyball', 'badminton', 'tabletennis', 'tennis'].includes(match.sportId)) && 'VS'}
+            {!(['basketball', 'football', 'hockey', 'kabaddi', 'cricket'].includes(match.sportId)) && 'VS'}
           </div>
         </div>
 
@@ -90,23 +82,16 @@ const MatchCard = ({ match, isLive = false }) => {
             </div>
             <div>
               <div className="font-sporty text-2xl text-white group-hover/team:text-primary-500 transition-colors italic">{match.team2Name}</div>
-              {['volleyball', 'badminton', 'tabletennis', 'tennis'].includes(match.sportId) && (
-                <div className="flex space-x-3 mt-1">
-                  <div className="text-[10px] font-black text-primary-500 uppercase tracking-[0.2em] italic">Sets: {match.sets?.team2 || 0}</div>
-                  {match.sportId === 'tennis' && (
-                    <div className="text-[10px] font-black text-secondary-400 uppercase tracking-[0.2em] italic">Games: {match.games?.team2 || 0}</div>
-                  )}
-                </div>
-              )}
+              {match.sportId === 'volleyball' || match.sportId === 'badminton' || match.sportId === 'tabletennis' ? (
+                <div className="text-[10px] font-black text-primary-500 uppercase tracking-[0.2em] italic mt-1">Sets: {match.sets?.team2 || 0}</div>
+              ) : null}
             </div>
           </div>
           <div className="text-right">
             <div className="text-5xl font-sporty text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] italic">
-              {['volleyball', 'badminton', 'tabletennis'].includes(match.sportId)
+              {match.sportId === 'volleyball' || match.sportId === 'badminton' || match.sportId === 'tabletennis'
                 ? match.currentSetPoints?.team2 || 0
-                : match.sportId === 'tennis'
-                  ? match.currentPoints?.team2 || 0
-                  : match.team2Score}
+                : match.team2Score}
             </div>
             {match.sportId === 'cricket' && match.status === 'live' && (
               <div className="text-[10px] font-black text-gray-500 text-right uppercase tracking-widest italic mt-2">

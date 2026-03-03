@@ -5,18 +5,12 @@ import { collection, query, where, onSnapshot, doc, updateDoc, runTransaction } 
 import CricketScorer from '../components/scoring/CricketScorer';
 import BasketballScorer from '../components/scoring/BasketballScorer';
 import GenericGoalScorer from '../components/scoring/GenericGoalScorer';
-import KabaddiScorer from '../components/scoring/KabaddiScorer';
 import SetScorer from '../components/scoring/SetScorer';
-import ChessScorer from '../components/scoring/ChessScorer';
-import TennisScorer from '../components/scoring/TennisScorer';
-import RulesModal from '../components/scoring/RulesModal';
-import { sportRules } from '../data/sportRules';
 
 export default function ScorerDashboard() {
     const { currentUser } = useAuth();
     const [matches, setMatches] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selectedRules, setSelectedRules] = useState(null);
 
     useEffect(() => {
         const q = query(
@@ -183,36 +177,24 @@ export default function ScorerDashboard() {
 
                                     <div className="flex justify-between items-center mb-6 pl-2">
                                         <div className="flex items-center space-x-3">
-                                            <span className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/5">Stadium</span>
+                                            <span className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/5">🏟️</span>
                                             <div>
-                                                <div className="font-bold uppercase tracking-widest text-white">
-                                                    {match.sportName || match.sportId}
-                                                    <span className="text-primary-400 text-[10px] ml-2">[{match.matchType || 'League'}]</span>
-                                                    <span className="text-secondary-400 text-[10px] ml-2">({match.gender || 'Boys'})</span>
-                                                </div>
+                                                <div className="font-bold uppercase tracking-widest text-white">{match.sportId} <span className="text-primary-400 text-[10px] ml-2">[{match.matchType || 'League'}]</span></div>
                                                 <div className="text-xs text-gray-400 tracking-wider">ID: {match.id.substring(0, 8)}</div>
                                             </div>
                                         </div>
 
-                                        <div className="flex flex-col items-end space-y-2">
-                                            {match.status === 'live' ? (
-                                                <span className="bg-primary-500/20 border border-primary-500/50 text-white text-xs font-bold px-3 py-1.5 rounded-full animate-pulse flex items-center space-x-2 shadow-lg shadow-primary-500/20">
-                                                    <div className="w-2 h-2 bg-primary-400 rounded-full"></div>
-                                                    <span>LIVE</span>
-                                                </span>
-                                            ) : (
-                                                <div className="flex flex-col items-end">
-                                                    <span className="bg-white/10 border border-white/20 text-gray-300 text-xs font-bold px-3 py-1.5 rounded-full mb-1">UPCOMING</span>
-                                                    <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{formatStartTime(match.scheduledStartTime)}</span>
-                                                </div>
-                                            )}
-                                            <button
-                                                onClick={() => setSelectedRules({ id: match.sportId, data: sportRules[match.sportId] })}
-                                                className="text-[10px] font-black uppercase tracking-widest text-primary-400 hover:text-primary-300 transition-colors underline decoration-primary-500/30 underline-offset-4"
-                                            >
-                                                View Rules
-                                            </button>
-                                        </div>
+                                        {match.status === 'live' ? (
+                                            <span className="bg-primary-500/20 border border-primary-500/50 text-white text-xs font-bold px-3 py-1.5 rounded-full animate-pulse flex items-center space-x-2 shadow-lg shadow-primary-500/20">
+                                                <div className="w-2 h-2 bg-primary-400 rounded-full"></div>
+                                                <span>LIVE</span>
+                                            </span>
+                                        ) : (
+                                            <div className="flex flex-col items-end">
+                                                <span className="bg-white/10 border border-white/20 text-gray-300 text-xs font-bold px-3 py-1.5 rounded-full mb-1">UPCOMING</span>
+                                                <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{formatStartTime(match.scheduledStartTime)}</span>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Detailed Scoring Section */}
@@ -221,13 +203,10 @@ export default function ScorerDashboard() {
                                             <div className="animate-fade-in">
                                                 {match.sportId === 'cricket' && <CricketScorer match={match} />}
                                                 {match.sportId === 'basketball' && <BasketballScorer match={match} />}
-                                                {['football', 'hockey'].includes(match.sportId) && <GenericGoalScorer match={match} />}
-                                                {match.sportId === 'kabaddi' && <KabaddiScorer match={match} />}
+                                                {['football'].includes(match.sportId) && <GenericGoalScorer match={match} />}
                                                 {['volleyball', 'badminton', 'tabletennis'].includes(match.sportId) && <SetScorer match={match} />}
-                                                {match.sportId === 'chess' && <ChessScorer match={match} />}
-                                                {match.sportId === 'tennis' && <TennisScorer match={match} />}
 
-                                                {!['cricket', 'basketball', 'football', 'hockey', 'kabaddi', 'volleyball', 'badminton', 'tabletennis', 'chess', 'tennis'].includes(match.sportId) && (
+                                                {!['cricket', 'basketball', 'football', 'volleyball', 'badminton', 'tabletennis'].includes(match.sportId) && (
                                                     <div className="grid grid-cols-5 gap-4 items-center pl-2">
                                                         <div className="col-span-2 flex flex-col items-center bg-white/5 p-4 rounded-xl border border-white/10 relative group">
                                                             <div className="font-bold text-center text-white mb-4 h-12 flex items-center">{match.team1Name}</div>
@@ -313,13 +292,6 @@ export default function ScorerDashboard() {
                     )}
                 </div>
             </div>
-
-            <RulesModal
-                isOpen={!!selectedRules}
-                onClose={() => setSelectedRules(null)}
-                sportId={selectedRules?.id}
-                rules={selectedRules?.data}
-            />
         </div>
     );
 }
