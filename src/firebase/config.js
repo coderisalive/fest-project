@@ -1,4 +1,4 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, initializeFirestore } from 'firebase/firestore';
 
@@ -9,23 +9,21 @@ const firebaseConfig = {
     storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
-    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Prevent re-initialization in React Strict Mode / Vite HMR
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-export const auth = getAuth(app);
-
-// Initialize Firestore and force long polling 
-// (Bypasses ERR_BLOCKED_BY_CLIENT issues caused by browser extensions/adblockers intercepting WebSockets)
-let dbInstance;
-try {
-    dbInstance = initializeFirestore(app, {
-        experimentalForceLongPolling: true,
-    });
-} catch (e) {
-    // If it was already initialized, get the existing instance
-    dbInstance = getFirestore(app);
+// 🔥 HARD FAIL if env vars are missing
+if (!firebaseConfig.apiKey) {
+    throw new Error(
+        'Firebase API key is missing. Check Vercel environment variables.'
+    );
 }
 
-export const db = dbInstance;
+// Always initialize once in production
+const app = initializeApp(firebaseConfig);
+
+export const auth = getAuth(app);
+
+// Firestore with long polling
+export const db = initializeFirestore(app, {
+    experimentalForceLongPolling: true,
+});
