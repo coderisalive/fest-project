@@ -52,7 +52,7 @@ export default function Login() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center -mt-16 overflow-hidden relative">
+        <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center pt-28 pb-12 relative">
             {/* Animated Background Blobs */}
             <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
             <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-secondary-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
