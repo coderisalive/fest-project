@@ -1,0 +1,74 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to get current user data
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    // Check for specific roles
+    function isMainAdmin() {
+      return request.auth != null && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserData().role == 'admin';
+    }
+
+    function isSubAdmin() {
+      return request.auth != null && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserData().role == 'sub-admin';
+    }
+
+    function isAdmin() {
+      return isMainAdmin() || isSubAdmin();
+    }
+
+    function isScorer() {
+      return request.auth != null && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserData().role == 'scorer';
+    }
+
+    // --- Users Collection ---
+    match /users/{userId} {
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      
+      // Role creation/modification restrictions
+      allow create: if 
+        // Self-signup: must be viewer
+        (request.auth != null && request.auth.uid == userId && request.resource.data.role == 'viewer') ||
+        // Main Admin: can create any role
+        isMainAdmin() ||
+        // Sub Admin: can only create scorers
+        (isSubAdmin() && request.resource.data.role == 'scorer');
+        
+      allow update: if 
+        // Main Admin: can manage everyone
+        isMainAdmin() ||
+        // Sub Admin: can only manage scorers and keep them as scorers
+        (isSubAdmin() && 
+         get(/databases/$(database)/documents/users/$(userId)).data.role == 'scorer' &&
+         request.resource.data.role == 'scorer');
+
+      allow delete: if isMainAdmin() || (isSubAdmin() && get(/databases/$(database)/documents/users/$(userId)).data.role == 'scorer');
+    }
+
+    // --- Sports Collection ---
+    match /sports/{sportId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- Teams Collection ---
+    match /teams/{teamId} {
+      allow read: if true;
+      allow write: if isAdmin() || isScorer();
+    }
+
+    // --- Matches Collection ---
+    match /matches/{matchId} {
+      allow read: if true;
+      allow write: if isAdmin() || isScorer();
+    }
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

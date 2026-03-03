@@ -1,2 +1,2 @@
-# Prakrida
-scoreing system
+# prakrida-scoring
+
