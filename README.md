@@ -1,2 +1,3 @@
-# Prakrida-Scoreing
-This is Sports scoring Platform for all college sports fest.
+# Fest Project
+
+This is my fest management project built using React, Firebase, and Tailwind CSS.
