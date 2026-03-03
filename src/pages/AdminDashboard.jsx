@@ -412,8 +412,17 @@ export default function AdminDashboard() {
                 extraFields = { half: 1 };
             } else if (sportType.includes('basketball')) {
                 extraFields = { quarter: 1 };
-            } else if (['volleyball', 'badminton', 'tabletennis', 'tennis'].some(s => sportType.includes(s))) {
+            } else if (['volleyball', 'badminton', 'tabletennis'].some(s => sportType.includes(s))) {
                 extraFields = { sets: { team1: 0, team2: 0 }, currentSetPoints: { team1: 0, team2: 0 } };
+            } else if (sportType.includes('tennis')) {
+                extraFields = {
+                    sets: { team1: 0, team2: 0 },
+                    games: { team1: 0, team2: 0 },
+                    currentPoints: { team1: 0, team2: 0 }
+                };
+            } else if (sportType.includes('chess')) {
+                // Chess uses standard score fields, no extras needed unless we add a clock
+                extraFields = { resultType: 'points' };
             }
 
             const matchData = {
