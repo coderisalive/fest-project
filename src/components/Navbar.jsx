@@ -92,9 +92,66 @@ const Navbar = () => {
           </div>
 
           <div className="md:hidden flex items-center">
-            <span className="mr-4 lg:hidden p-2 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-white/10 text-white">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
-            </span>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-white/10 text-white"
+            >
+              {isMobileMenuOpen ? (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <div className={`fixed inset-0 z-40 md:hidden transition-all duration-300 ${isMobileMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'}`}>
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsMobileMenuOpen(false)}></div>
+        <div className={`absolute right-0 top-0 bottom-0 w-64 bg-gray-950 border-l border-white/10 p-6 transition-transform duration-300 transform ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+          <div className="flex flex-col space-y-4 mt-8">
+            {dynamicNavItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`py-3 text-sm font-sporty tracking-[0.1em] transition-all duration-300 ${location.pathname === item.path ? 'text-primary-500' : 'text-gray-400 hover:text-white'}`}
+              >
+                {item.label}
+              </Link>
+            ))}
+
+            <div className="pt-4 border-t border-white/10">
+              {currentUser ? (
+                <div className="space-y-4">
+                  <div className="text-xs text-gray-500 uppercase tracking-widest font-sporty">
+                    Logged in as {userRole}
+                  </div>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full px-4 py-3 bg-gradient-to-r from-red-600/80 to-pink-600/80 text-white rounded-xl text-sm font-semibold transition-all"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full px-4 py-3 bg-gradient-to-r from-primary-600/80 to-secondary-600/80 text-white text-center rounded-xl text-sm font-semibold transition-all"
+                >
+                  Login
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
