@@ -12,6 +12,7 @@ import AdminDashboard from './pages/AdminDashboard.jsx';
 import ScorerDashboard from './pages/ScorerDashboard.jsx';
 import ViewerDashboard from './pages/ViewerDashboard.jsx';
 import SchedulePage from './pages/SchedulePage.jsx';
+import ScorerMatch from './pages/ScorerMatch.jsx';
 import Unauthorized from './pages/Unauthorized.jsx';
 
 function App() {
@@ -44,6 +45,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['admin', 'sub-admin', 'scorer']}>
                     <ScorerDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/scorer/match/:matchId"
+                element={
+                  <ProtectedRoute allowedRoles={['admin', 'sub-admin', 'scorer']}>
+                    <ScorerMatch />
                   </ProtectedRoute>
                 }
               />

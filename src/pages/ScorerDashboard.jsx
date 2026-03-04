@@ -2,13 +2,11 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase/config';
 import { collection, query, where, onSnapshot, doc, updateDoc, runTransaction } from 'firebase/firestore';
-import CricketScorer from '../components/scoring/CricketScorer';
-import BasketballScorer from '../components/scoring/BasketballScorer';
-import GenericGoalScorer from '../components/scoring/GenericGoalScorer';
-import SetScorer from '../components/scoring/SetScorer';
+import { useNavigate } from 'react-router-dom';
 
 export default function ScorerDashboard() {
     const { currentUser } = useAuth();
+    const navigate = useNavigate();
     const [matches, setMatches] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -197,45 +195,33 @@ export default function ScorerDashboard() {
                                         )}
                                     </div>
 
-                                    {/* Detailed Scoring Section */}
+                                    {/* Detailed Scoring Section - Redirect to Room */}
                                     <div className="mt-8">
                                         {match.status === 'live' ? (
                                             <div className="animate-fade-in">
-                                                {match.sportId === 'cricket' && <CricketScorer match={match} />}
-                                                {match.sportId === 'basketball' && <BasketballScorer match={match} />}
-                                                {['football'].includes(match.sportId) && <GenericGoalScorer match={match} />}
-                                                {['volleyball', 'badminton', 'tabletennis'].includes(match.sportId) && <SetScorer match={match} />}
-
-                                                {!['cricket', 'basketball', 'football', 'volleyball', 'badminton', 'tabletennis'].includes(match.sportId) && (
-                                                    <div className="grid grid-cols-5 gap-4 items-center pl-2">
-                                                        <div className="col-span-2 flex flex-col items-center bg-white/5 p-4 rounded-xl border border-white/10 relative group">
-                                                            <div className="font-bold text-center text-white mb-4 h-12 flex items-center">{match.team1Name}</div>
-                                                            <div className="flex flex-col items-center space-y-3">
-                                                                <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 drop-shadow-lg">{match.team1Score}</span>
-                                                                <div className="flex space-x-2 pt-2">
-                                                                    <button onClick={() => handleUpdateScore(match.id, 'team1Score', match.team1Score - 1)} className="bg-gray-800 hover:bg-gray-700 border border-white/10 text-white rounded-lg w-10 h-10 flex items-center justify-center font-bold transition-colors shadow-inner">-</button>
-                                                                    <button onClick={() => handleUpdateScore(match.id, 'team1Score', match.team1Score + 1)} className="bg-primary-600 hover:bg-primary-500 text-white rounded-lg w-10 h-10 flex items-center justify-center font-bold shadow-lg shadow-primary-500/30 transition-colors">+</button>
-                                                                </div>
+                                                <button
+                                                    onClick={() => navigate(`/scorer/match/${match.id}`)}
+                                                    className="w-full bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-all group/room"
+                                                >
+                                                    <div className="flex flex-col items-center gap-4">
+                                                        <span className="text-4xl group-hover/room:scale-110 transition-transform">🎯</span>
+                                                        <div className="text-center">
+                                                            <div className="text-lg font-black text-white group-hover/room:text-primary-400">Enter Scoring Room</div>
+                                                            <div className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1">Real-time control panel</div>
+                                                        </div>
+                                                        <div className="flex items-center gap-8 mt-4 grayscale opacity-40">
+                                                            <div className="text-center">
+                                                                <div className="text-2xl font-black text-white">{match.team1Score}</div>
+                                                                <div className="text-[8px] font-black text-gray-500">{match.team1Name}</div>
                                                             </div>
-                                                        </div>
-
-                                                        <div className="col-span-1 flex justify-center items-center h-full relative">
-                                                            <div className="absolute w-[2px] h-full bg-white/5"></div>
-                                                            <div className="bg-gray-900 border border-white/10 w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-gray-400 relative z-10 font-mono">VS</div>
-                                                        </div>
-
-                                                        <div className="col-span-2 flex flex-col items-center bg-white/5 p-4 rounded-xl border border-white/10 relative group">
-                                                            <div className="font-bold text-center text-white mb-4 h-12 flex items-center">{match.team2Name}</div>
-                                                            <div className="flex flex-col items-center space-y-3">
-                                                                <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 drop-shadow-lg">{match.team2Score}</span>
-                                                                <div className="flex space-x-2 pt-2">
-                                                                    <button onClick={() => handleUpdateScore(match.id, 'team2Score', match.team2Score - 1)} className="bg-gray-800 hover:bg-gray-700 border border-white/10 text-white rounded-lg w-10 h-10 flex items-center justify-center font-bold transition-colors shadow-inner">-</button>
-                                                                    <button onClick={() => handleUpdateScore(match.id, 'team2Score', match.team2Score + 1)} className="bg-primary-600 hover:bg-primary-500 text-white rounded-lg w-10 h-10 flex items-center justify-center font-bold shadow-lg shadow-primary-500/30 transition-colors">+</button>
-                                                                </div>
+                                                            <div className="text-xs font-black text-gray-600">VS</div>
+                                                            <div className="text-center">
+                                                                <div className="text-2xl font-black text-white">{match.team2Score}</div>
+                                                                <div className="text-[8px] font-black text-gray-500">{match.team2Name}</div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                )}
+                                                </button>
                                             </div>
                                         ) : (
                                             <div className="flex flex-col justify-center items-center py-6">
@@ -263,27 +249,38 @@ export default function ScorerDashboard() {
                                         )}
                                     </div>
 
-                                    <div className="mt-4 pt-4 border-t border-white/10 pl-2">
+                                    <div className="mt-4 pt-4 border-t border-white/10 pl-2 flex gap-3">
                                         {match.status === 'upcoming' ? (
                                             <button
-                                                onClick={() => handleStartMatch(match.id)}
+                                                onClick={async () => {
+                                                    await handleStartMatch(match.id);
+                                                    navigate(`/scorer/match/${match.id}`);
+                                                }}
                                                 disabled={!isMatchReady(match.scheduledStartTime)}
-                                                className={`w-full shadow-lg text-lg py-3 flex items-center justify-center space-x-2 transition-all rounded-xl font-bold ${isMatchReady(match.scheduledStartTime)
+                                                className={`flex-1 shadow-lg text-lg py-3 flex items-center justify-center space-x-2 transition-all rounded-xl font-bold ${isMatchReady(match.scheduledStartTime)
                                                     ? 'bg-gradient-to-r from-primary-600 to-secondary-600 text-white shadow-primary-500/20 hover:scale-[1.02]'
                                                     : 'bg-white/5 text-gray-500 cursor-not-allowed opacity-50 grayscale'
                                                     }`}
                                             >
                                                 <span>{isMatchReady(match.scheduledStartTime) ? '▶' : '🔒'}</span>
-                                                <span>{isMatchReady(match.scheduledStartTime) ? 'Start Match Recording' : 'Recording Unavailable'}</span>
+                                                <span>{isMatchReady(match.scheduledStartTime) ? 'Start Match' : 'Locked'}</span>
                                             </button>
                                         ) : (
-                                            <button
-                                                onClick={() => handleEndMatchAndCompute(match)}
-                                                className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 border border-red-500/50 text-white px-4 py-3 rounded-xl font-bold transition-all shadow-lg shadow-red-500/20 flex items-center justify-center space-x-2 group"
-                                            >
-                                                <span className="text-xl group-hover:animate-bounce">⏹</span>
-                                                <span>Finalize Match & Compute</span>
-                                            </button>
+                                            <>
+                                                <button
+                                                    onClick={() => navigate(`/scorer/match/${match.id}`)}
+                                                    className="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center space-x-2"
+                                                >
+                                                    <span>Open Room</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => handleEndMatchAndCompute(match)}
+                                                    className="px-6 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-500/20 py-3 rounded-xl font-bold transition-all flex items-center justify-center"
+                                                    title="End Match"
+                                                >
+                                                    ⏹
+                                                </button>
+                                            </>
                                         )}
                                     </div>
                                 </div>

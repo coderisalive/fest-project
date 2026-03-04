@@ -733,10 +733,28 @@ export default function AdminDashboard() {
                                     </h2>
                                     <form onSubmit={handleCreateSport} className="space-y-5 relative z-10">
                                         <div>
-                                            <label className="block text-xs font-bold tracking-widest text-gray-400 mb-2 uppercase">Sport Title</label>
+                                            <label className="block text-xs font-bold tracking-widest text-gray-400 mb-2 uppercase">Choose Sport Template (Optional)</label>
+                                            <select
+                                                onChange={(e) => {
+                                                    const selected = initialSports.find(s => s.name === e.target.value);
+                                                    if (selected) {
+                                                        setNewSportName(selected.name);
+                                                        setNewSportTeamSize(selected.teamSize.toString());
+                                                        setNewSportDesc(selected.description);
+                                                    }
+                                                }}
+                                                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none transition-all font-medium mb-4"
+                                            >
+                                                <option value="">-- Select Predefined Sport --</option>
+                                                {initialSports.map(s => (
+                                                    <option key={s.id} value={s.name} className="bg-gray-900">{s.name}</option>
+                                                ))}
+                                            </select>
+
+                                            <label className="block text-xs font-bold tracking-widest text-gray-400 mb-2 uppercase">Sport Title (Or Type Custom)</label>
                                             <input
                                                 type="text" required value={newSportName} onChange={(e) => setNewSportName(e.target.value)}
-                                                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none transition-all placeholder-gray-600 font-medium" placeholder="e.g. Tennis"
+                                                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none transition-all placeholder-gray-600 font-medium" placeholder="e.g. Cricket, Football, or Custom"
                                             />
                                         </div>
                                         <div className="grid grid-cols-1 gap-4">

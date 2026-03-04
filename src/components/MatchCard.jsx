@@ -58,12 +58,20 @@ const MatchCard = ({ match, isLive = false }) => {
                 : match.team1Score}
             </div>
             {match.sportId === 'cricket' && match.status === 'live' && (
-              <div className="text-[10px] font-black text-gray-500 text-right uppercase tracking-widest italic mt-2">
-                {match.innings === 1 && `W: ${match.wickets || 0} • O: ${match.currentOver || 0}.${match.ballsInOver?.filter(b => b !== 'Wd' && b !== 'Nb').length || 0}`}
+              <div className="text-[10px] font-black text-gray-400 text-right uppercase tracking-widest italic mt-2 flex flex-col items-end gap-1">
+                <div>{match.innings === 1 ? `W: ${match.wickets || 0} • O: ${match.currentOver || 0}.${match.ballsInOver?.filter(b => b !== 'Wd' && b !== 'Nb').length || 0}` : ''}</div>
+                <div className="text-primary-400">RR: {((match.team1Score || 0) / ((match.currentOver || 0) + (match.ballsInOver?.filter(b => b !== 'Wd' && b !== 'Nb').length || 0) / 6 || 1)).toFixed(2)}</div>
               </div>
             )}
           </div>
         </div>
+
+        {match.sportId === 'cricket' && match.innings === 2 && match.target > 0 && match.status === 'live' && (
+          <div className="px-6 py-3 bg-primary-500/5 border border-primary-500/10 rounded-xl flex justify-between items-center animate-pulse">
+            <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest italic">Target: {match.target}</div>
+            <div className="text-[10px] font-black text-primary-400 uppercase tracking-widest italic">Need {match.target - match.team2Score} from {((match.totalOvers || 20) * 6) - ((match.currentOver || 0) * 6 + (match.ballsInOver?.filter(b => b !== 'Wd' && b !== 'Nb').length || 0))} balls</div>
+          </div>
+        )}
 
         <div className="flex items-center justify-center relative h-6">
           <div className="w-full h-px bg-white/5 absolute top-1/2 -translate-y-1/2"></div>
@@ -94,8 +102,11 @@ const MatchCard = ({ match, isLive = false }) => {
                 : match.team2Score}
             </div>
             {match.sportId === 'cricket' && match.status === 'live' && (
-              <div className="text-[10px] font-black text-gray-500 text-right uppercase tracking-widest italic mt-2">
-                {match.innings === 2 && `W: ${match.wickets || 0} • O: ${match.currentOver || 0}.${match.ballsInOver?.filter(b => b !== 'Wd' && b !== 'Nb').length || 0}`}
+              <div className="text-[10px] font-black text-gray-400 text-right uppercase tracking-widest italic mt-2 flex flex-col items-end gap-1">
+                <div>{match.innings === 2 ? `W: ${match.wickets || 0} • O: ${match.currentOver || 0}.${match.ballsInOver?.filter(b => b !== 'Wd' && b !== 'Nb').length || 0}` : ''}</div>
+                {match.innings === 2 && (
+                  <div className="text-primary-400">RR: {((match.team2Score || 0) / ((match.currentOver || 0) + (match.ballsInOver?.filter(b => b !== 'Wd' && b !== 'Nb').length || 0) / 6 || 1)).toFixed(2)}</div>
+                )}
               </div>
             )}
           </div>
