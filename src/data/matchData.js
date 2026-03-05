@@ -25,13 +25,13 @@ const originalLiveMatches = [
   },
   {
     id: 3,
-    sport: sports[2], // Kabaddi
+    sport: sports[2], // Carrom
     team1: colleges[4],
     team2: colleges[5],
     score1: { points: 28 },
     score2: { points: 25 },
-    status: "Live - 2nd Half",
-    venue: "Kabaddi Court",
+    status: "Live - Board 2",
+    venue: "Indoor Hall",
     startTime: "9:00 AM"
   }
 ];
@@ -191,7 +191,7 @@ const originalSportPointsTables = {
       ga: 12
     }
   ],
-  kabaddi: [
+  carrom: [
     {
       position: 1,
       college: colleges[4],
@@ -359,60 +359,54 @@ const originalSportPointsTables = {
       sp: "-10"
     }
   ],
-  athletics: [
+  lawntennis: [
     {
       position: 1,
       college: colleges[0],
-      gold: 8,
-      silver: 4,
-      bronze: 2,
-      total: 14,
-      points: 74
+      played: 5,
+      won: 4,
+      lost: 1,
+      points: 8
     },
     {
       position: 2,
       college: colleges[2],
-      gold: 6,
-      silver: 5,
-      bronze: 3,
-      total: 14,
-      points: 65
+      played: 5,
+      won: 3,
+      lost: 2,
+      points: 6
     },
     {
       position: 3,
       college: colleges[1],
-      gold: 5,
-      silver: 6,
-      bronze: 2,
-      total: 13,
-      points: 62
+      played: 5,
+      won: 3,
+      lost: 2,
+      points: 6
     },
     {
       position: 4,
       college: colleges[3],
-      gold: 3,
-      silver: 4,
-      bronze: 5,
-      total: 12,
-      points: 50
+      played: 5,
+      won: 2,
+      lost: 3,
+      points: 4
     },
     {
       position: 5,
       college: colleges[4],
-      gold: 2,
-      silver: 3,
-      bronze: 4,
-      total: 9,
-      points: 38
+      played: 5,
+      won: 2,
+      lost: 3,
+      points: 4
     },
     {
       position: 6,
       college: colleges[5],
-      gold: 1,
-      silver: 2,
-      bronze: 3,
-      total: 6,
-      points: 26
+      played: 5,
+      won: 1,
+      lost: 4,
+      points: 2
     }
   ],
   badminton: [

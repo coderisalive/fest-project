@@ -53,7 +53,7 @@ const MatchCard = ({ match, isLive = false }) => {
           </div>
           <div className="text-right">
             <div className="text-5xl font-sporty text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] italic">
-              {match.sportId === 'volleyball' || match.sportId === 'badminton' || match.sportId === 'tabletennis'
+              {['volleyball', 'badminton', 'tabletennis', 'lawntennis'].includes(match.sportId)
                 ? match.currentSetPoints?.team1 || 0
                 : match.team1Score}
             </div>
@@ -77,9 +77,9 @@ const MatchCard = ({ match, isLive = false }) => {
           <div className="w-full h-px bg-white/5 absolute top-1/2 -translate-y-1/2"></div>
           <div className="px-5 py-1.5 rounded-full bg-black border border-white/10 text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] absolute z-10 italic shadow-xl">
             {match.sportId === 'basketball' && `Q${match.quarter || 1}`}
-            {['football', 'hockey', 'kabaddi'].includes(match.sportId) && `HALF ${match.half || 1}`}
+            {['football', 'hockey', 'kabaddi', 'carrom'].includes(match.sportId) && (match.sportId === 'carrom' ? `BOARD ${match.half || 1}` : `HALF ${match.half || 1}`)}
             {match.sportId === 'cricket' && `INN. ${match.innings || 1}`}
-            {!(['basketball', 'football', 'hockey', 'kabaddi', 'cricket'].includes(match.sportId)) && 'VS'}
+            {!(['basketball', 'football', 'hockey', 'kabaddi', 'cricket', 'carrom'].includes(match.sportId)) && 'VS'}
           </div>
         </div>
 
@@ -90,14 +90,14 @@ const MatchCard = ({ match, isLive = false }) => {
             </div>
             <div>
               <div className="font-sporty text-2xl text-white group-hover/team:text-primary-500 transition-colors italic">{match.team2Name}</div>
-              {match.sportId === 'volleyball' || match.sportId === 'badminton' || match.sportId === 'tabletennis' ? (
+              {['volleyball', 'badminton', 'tabletennis', 'lawntennis'].includes(match.sportId) ? (
                 <div className="text-[10px] font-black text-primary-500 uppercase tracking-[0.2em] italic mt-1">Sets: {match.sets?.team2 || 0}</div>
               ) : null}
             </div>
           </div>
           <div className="text-right">
             <div className="text-5xl font-sporty text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] italic">
-              {match.sportId === 'volleyball' || match.sportId === 'badminton' || match.sportId === 'tabletennis'
+              {['volleyball', 'badminton', 'tabletennis', 'lawntennis'].includes(match.sportId)
                 ? match.currentSetPoints?.team2 || 0
                 : match.team2Score}
             </div>

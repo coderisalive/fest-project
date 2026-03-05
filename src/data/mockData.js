@@ -52,15 +52,15 @@ export const sports = [
   },
   {
     id: 3,
-    name: "Kabaddi",
-    description: "Standard format",
-    teamSize: 7
+    name: "Carrom",
+    description: "Best of 3 boards",
+    teamSize: 2
   },
   {
     id: 4,
-    name: "Athletics",
-    description: "Track & Field events",
-    teamSize: 1
+    name: "Lawn Tennis",
+    description: "Sets format",
+    teamSize: 2
   },
   {
     id: 5,

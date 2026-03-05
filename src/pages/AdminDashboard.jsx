@@ -408,11 +408,11 @@ export default function AdminDashboard() {
 
             if (sportType.includes('cricket')) {
                 extraFields = { currentOver: 0, currentBall: 0, wickets: 0, ballsInOver: [], target: 0, innings: 1 };
-            } else if (['football', 'hockey', 'kabaddi'].some(s => sportType.includes(s))) {
+            } else if (['football', 'hockey', 'kabaddi', 'carrom'].some(s => sportType.includes(s))) {
                 extraFields = { half: 1 };
             } else if (sportType.includes('basketball')) {
                 extraFields = { quarter: 1 };
-            } else if (['volleyball', 'badminton', 'tabletennis', 'tennis'].some(s => sportType.includes(s))) {
+            } else if (['volleyball', 'badminton', 'tabletennis', 'tennis', 'lawntennis'].some(s => sportType.includes(s))) {
                 extraFields = { sets: { team1: 0, team2: 0 }, currentSetPoints: { team1: 0, team2: 0 } };
             }
 

@@ -177,11 +177,11 @@ export default function ScorerMatch() {
                     {/* Render specific scorer based on sport ID */}
                     {baseSportId === 'cricket' && <CricketScorer match={match} />}
                     {baseSportId === 'basketball' && <BasketballScorer match={match} />}
-                    {['football', 'soccer', 'hockey'].includes(baseSportId) && <GenericGoalScorer match={match} />}
-                    {['volleyball', 'badminton', 'tabletennis', 'tennis'].includes(baseSportId) && <SetScorer match={match} />}
+                    {['football', 'soccer', 'hockey', 'carrom'].includes(baseSportId) && <GenericGoalScorer match={match} />}
+                    {['volleyball', 'badminton', 'tabletennis', 'tennis', 'lawntennis'].includes(baseSportId) && <SetScorer match={match} />}
 
                     {/* Fallback for generic score updates if no specific component exists */}
-                    {!['cricket', 'basketball', 'football', 'soccer', 'hockey', 'volleyball', 'badminton', 'tabletennis', 'tennis'].includes(baseSportId) && (
+                    {!['cricket', 'basketball', 'football', 'soccer', 'hockey', 'carrom', 'volleyball', 'badminton', 'tabletennis', 'tennis', 'lawntennis'].includes(baseSportId) && (
                         <div className="text-center py-12">
                             <h3 className="text-xl font-bold text-white mb-4">Generic Scorer</h3>
                             <p className="text-gray-400 mb-8">Use the controls below to manually adjust scores.</p>
