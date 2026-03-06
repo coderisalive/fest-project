@@ -44,9 +44,9 @@ const Navbar = () => {
   }
 
   return (
-    <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-black/90 backdrop-blur-xl border-b border-white/5 shadow-2xl' : 'bg-transparent pt-4'}`}>
+    <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-black md:bg-black/90 backdrop-blur-xl border-b border-white/5 shadow-2xl' : 'bg-black md:bg-transparent pt-0 md:pt-4'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`flex justify-between items-center transition-all duration-300 ${scrolled ? 'h-16' : 'h-24'}`}>
+        <div className={`flex justify-between items-center transition-all duration-300 ${scrolled ? 'h-16' : 'h-20 md:h-24'}`}>
           <Link to="/" className="flex items-center space-x-2 group">
             <span className="font-sporty text-2xl tracking-tighter">
               <span className="text-white">PRAK</span>
@@ -94,7 +94,7 @@ const Navbar = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-white/10 text-white"
+              className="p-2 rounded-xl bg-gray-900 border border-white/10 text-white"
             >
               {isMobileMenuOpen ? (
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

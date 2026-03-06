@@ -53,25 +53,7 @@ const LiveMatches = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="mb-12 glass-card border border-primary-500/10 bg-white/[0.02] p-8 flex flex-col md:flex-row gap-6 items-center justify-between">
-          <div className="flex items-center">
-            <div className="w-14 h-14 rounded-2xl bg-primary-500/10 flex items-center justify-center text-3xl mr-6 border border-primary-500/20">
-              ⚡
-            </div>
-            <div>
-              <h3 className="font-sporty text-xl text-white italic tracking-tight">Rapid Impact Scoring</h3>
-              <p className="text-gray-400 text-sm italic font-medium mt-1">
-                Field data is transmitted in real-time. Seconds matter.
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-1 w-32 bg-white/5 rounded-full overflow-hidden">
-              <div className="h-full bg-primary-500 w-2/3 animate-pulse"></div>
-            </div>
-            <span className="text-[10px] font-black tracking-widest text-primary-500 uppercase">Syncing...</span>
-          </div>
-        </div>
+
 
         {loading ? (
           <div className="text-center py-20 text-gray-500 font-medium italic">INITIALIZING BATTLEFIELD DATA...</div>

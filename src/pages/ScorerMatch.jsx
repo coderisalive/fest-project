@@ -14,6 +14,7 @@ export default function ScorerMatch() {
     const { currentUser } = useAuth();
     const [match, setMatch] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [selectedWinnerId, setSelectedWinnerId] = useState(null);
 
     useEffect(() => {
         if (!matchId) return;
@@ -63,27 +64,27 @@ export default function ScorerMatch() {
                 let t1Data = team1Doc.data();
                 let t2Data = team2Doc.data();
 
+                if (!selectedWinnerId) throw "Please select a winner first!";
+
                 const score1 = match.team1Score;
                 const score2 = match.team2Score;
                 let t1PointsEarned = 0;
                 let t2PointsEarned = 0;
-                let matchWinnerId = null;
+                let matchWinnerId = selectedWinnerId;
 
                 t1Data.matchesPlayed = (t1Data.matchesPlayed || 0) + 1;
                 t2Data.matchesPlayed = (t2Data.matchesPlayed || 0) + 1;
 
-                if (score1 > score2) {
+                if (selectedWinnerId === match.team1Id) {
                     t1PointsEarned = rules.win;
                     t2PointsEarned = rules.loss;
                     t1Data.won = (t1Data.won || 0) + 1;
                     t2Data.lost = (t2Data.lost || 0) + 1;
-                    matchWinnerId = match.team1Id;
-                } else if (score2 > score1) {
+                } else if (selectedWinnerId === match.team2Id) {
                     t2PointsEarned = rules.win;
                     t1PointsEarned = rules.loss;
                     t2Data.won = (t2Data.won || 0) + 1;
                     t1Data.lost = (t1Data.lost || 0) + 1;
-                    matchWinnerId = match.team2Id;
                 } else {
                     t1PointsEarned = rules.draw;
                     t2PointsEarned = rules.draw;
@@ -159,7 +160,8 @@ export default function ScorerMatch() {
                             </div>
                             <button
                                 onClick={handleEndMatchAndCompute}
-                                className="bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-[10px] font-black px-4 py-2 rounded-xl uppercase tracking-widest transition-all shadow-lg shadow-red-500/20 active:scale-95 border border-red-500/30"
+                                disabled={!selectedWinnerId}
+                                className={`bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-[10px] font-black px-4 py-2 rounded-xl uppercase tracking-widest transition-all shadow-lg shadow-red-500/20 active:scale-95 border border-red-500/30 ${!selectedWinnerId ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
                                 Finish Match
                             </button>
@@ -173,6 +175,40 @@ export default function ScorerMatch() {
             </div>
 
             <div className="max-w-4xl mx-auto px-4 relative z-10">
+                {match.status === 'live' && (
+                    <div className="mb-8 glass-card border border-white/10 p-6 bg-white/5">
+                        <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-4">Select Official Winner</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <button
+                                onClick={() => setSelectedWinnerId(match.team1Id)}
+                                className={`px-4 py-3 rounded-xl border font-bold transition-all ${selectedWinnerId === match.team1Id ? 'bg-primary-500 border-primary-400 text-white shadow-lg shadow-primary-500/30' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'}`}
+                            >
+                                <div className="text-[10px] uppercase opacity-60 mb-1">Team 1</div>
+                                <div className="truncate">{match.team1Name}</div>
+                            </button>
+                            <button
+                                onClick={() => setSelectedWinnerId(match.team2Id)}
+                                className={`px-4 py-3 rounded-xl border font-bold transition-all ${selectedWinnerId === match.team2Id ? 'bg-primary-500 border-primary-400 text-white shadow-lg shadow-primary-500/30' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'}`}
+                            >
+                                <div className="text-[10px] uppercase opacity-60 mb-1">Team 2</div>
+                                <div className="truncate">{match.team2Name}</div>
+                            </button>
+                            <button
+                                onClick={() => setSelectedWinnerId('draw')}
+                                className={`px-4 py-3 rounded-xl border font-bold transition-all ${selectedWinnerId === 'draw' ? 'bg-primary-500 border-primary-400 text-white shadow-lg shadow-primary-500/30' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'}`}
+                            >
+                                <div className="text-[10px] uppercase opacity-60 mb-1">Outcome</div>
+                                <div>DRAW</div>
+                            </button>
+                        </div>
+                        {!selectedWinnerId && (
+                            <p className="mt-4 text-[10px] text-yellow-500/80 font-bold uppercase tracking-widest animate-pulse">
+                                * Selection required before finishing match
+                            </p>
+                        )}
+                    </div>
+                )}
+
                 <div className="glass-card !p-8 border-primary-500/20 shadow-2xl shadow-primary-500/5">
                     {/* Render specific scorer based on sport ID */}
                     {baseSportId === 'cricket' && <CricketScorer match={match} />}

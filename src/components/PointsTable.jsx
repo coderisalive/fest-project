@@ -41,9 +41,9 @@ const PointsTable = ({ sport, pointsData }) => {
 
   const getTableColumns = () => {
     // Standardize columns for all sports as per user request
-    const standardHeaders = ['Pos', 'College', 'Matches', 'Win', 'Loose', 'Draw', 'Points', 'Run Rate'];
+    const standardHeaders = ['Pos', 'College', 'Matches', 'Win', 'Loss', 'Draw', 'Points', 'Run Rate'];
     const standardKeys = ['position', 'college', 'matchesPlayed', 'won', 'lost', 'drawn', 'points', 'nrr'];
-    const standardFooter = 'Matches: Played | Win: Won | Loose: Lost | Draw: Drawn | Points: Total Points | Run Rate: Performance Rate';
+    const standardFooter = 'Matches: Played | Win: Won | Loss: Lost | Draw: Drawn | Points: Total Points | Run Rate: Performance Rate';
 
     switch (sport?.name.toLowerCase()) {
       case 'athletics':
