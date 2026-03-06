@@ -76,9 +76,11 @@ export default function AdminDashboard() {
                 const sportsSnapshot = await getDocs(collection(db, 'sports'));
                 setSportsList(sportsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
             } else if (activeTab === 'teams') {
+                const sportsSnapshot = await getDocs(collection(db, 'sports'));
+                setSportsList(sportsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
                 const teamsSnapshot = await getDocs(collection(db, 'teams'));
                 setTeamsList(teamsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-            } else if (activeTab === 'matches') {
+            } else if (activeTab === 'matches' || activeTab === 'dev') {
                 const sportsSnapshot = await getDocs(collection(db, 'sports'));
                 setSportsList(sportsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
                 const teamsSnapshot = await getDocs(collection(db, 'teams'));
