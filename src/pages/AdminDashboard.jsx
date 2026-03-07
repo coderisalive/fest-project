@@ -1000,12 +1000,12 @@ export default function AdminDashboard() {
                                     <div className="bg-primary-500/5 rounded-3xl p-8 border border-primary-500/10 text-center">
                                         <div className="text-sm font-bold text-primary-400 uppercase tracking-widest mb-4">Preview Configuration</div>
                                         <div className="flex items-center justify-center space-x-8">
-                                            <div className="text-2xl font-black text-white">{newMatchTeam1Id ? teamsList.find(t => t.id === newMatchTeam1Id)?.name : '?'}</div>
+                                            <div className="text-2xl font-black text-white">{newMatchTeam1Id ? (teamsList.find(t => t.id === newMatchTeam1Id)?.name || newMatchTeam1Id) : 'Team Alpha'}</div>
                                             <div className="w-12 h-12 rounded-full bg-gray-900 border border-white/10 flex items-center justify-center font-mono text-xs font-bold text-gray-500">VS</div>
-                                            <div className="text-2xl font-black text-white">{newMatchTeam2Id ? teamsList.find(t => t.id === newMatchTeam2Id)?.name : '?'}</div>
+                                            <div className="text-2xl font-black text-white">{newMatchTeam2Id ? (teamsList.find(t => t.id === newMatchTeam2Id)?.name || newMatchTeam2Id) : 'Team Beta'}</div>
                                         </div>
                                         <div className="mt-4 text-gray-500 font-medium">
-                                            Sport: <span className="text-white font-bold">{newMatchSportId ? sportsList.find(s => s.id === newMatchSportId)?.name : 'Not Selected'}</span>
+                                            Sport: <span className="text-white font-bold">{newMatchSportId ? (sportsList.find(s => s.id === newMatchSportId)?.name || newMatchSportId) : 'Not Selected'}</span>
                                         </div>
                                     </div>
 

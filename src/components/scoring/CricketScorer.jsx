@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 
 export default function CricketScorer({ match }) {
-    const handleBall = async (outcome) => {
+    const [nbSelection, setNbSelection] = useState(false);
+
+    const handleBall = async (outcome, extraRuns = 0) => {
         const matchRef = doc(db, 'matches', match.id);
 
         let runsToAdd = 0;
@@ -23,12 +25,13 @@ export default function CricketScorer({ match }) {
             displayOutcome = 'Wd';
             extraType = 'wide';
         } else if (outcome === 'Nb') {
-            runsToAdd = 1;
+            runsToAdd = 1 + extraRuns;
             isLegalDelivery = false;
-            displayOutcome = 'Nb';
+            displayOutcome = extraRuns > 0 ? `${extraRuns}Nb` : 'Nb';
             extraType = 'noball';
+            setNbSelection(false); // Close selection menu
         } else if (outcome === 'B') {
-            runsToAdd = 1; // Simplification: assume 1 bye for now, or we could pass 1B, 2B etc
+            runsToAdd = 1; // Simplification: assume 1 bye for now
             displayOutcome = 'B';
             extraType = 'bye';
         } else if (outcome === 'Lb') {
@@ -53,7 +56,7 @@ export default function CricketScorer({ match }) {
         };
 
         const newBallsInOver = [...ballsInOver, displayOutcome];
-        const legalBallsCount = newBallsInOver.filter(b => b !== 'Wd' && b !== 'Nb').length;
+        const legalBallsCount = newBallsInOver.filter(b => typeof b === 'number' || b === 'W' || b === 'B' || b === 'Lb').length;
 
         const updates = {
             [teamKey]: currentScore + runsToAdd,
@@ -66,7 +69,6 @@ export default function CricketScorer({ match }) {
             updates.currentOver = currentOver + 1;
             updates.ballsInOver = [];
             updates.currentBall = 0;
-            // alert(`Over ${currentOver + 1} completed!`);
         }
 
         try {
@@ -107,7 +109,7 @@ export default function CricketScorer({ match }) {
                 </div>
                 <div className="text-right">
                     <div className="text-sm font-bold text-gray-400 uppercase tracking-widest">Overs</div>
-                    <div className="text-3xl font-bold text-white">{match.currentOver}.{match.ballsInOver?.filter(b => b !== 'Wd' && b !== 'Nb').length}</div>
+                    <div className="text-3xl font-bold text-white">{match.currentOver}.{match.ballsInOver?.filter(b => typeof b === 'number' || b === 'W' || b === 'B' || b === 'Lb').length}</div>
                 </div>
             </div>
 
@@ -116,11 +118,11 @@ export default function CricketScorer({ match }) {
                     <span className="text-gray-600 font-medium italic">Ready for new over...</span>
                 ) : (
                     match.ballsInOver?.map((ball, i) => (
-                        <div key={i} className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm shrink-0 border shadow-lg ${ball === 'W' ? 'bg-red-500 border-red-400 text-white' :
-                                ball === 'Wd' || ball === 'Nb' ? 'bg-yellow-500 border-yellow-400 text-black' :
-                                    ball === 'B' || ball === 'Lb' ? 'bg-purple-500 border-purple-400 text-white' :
-                                        ball === 4 || ball === 6 ? 'bg-primary-600 border-primary-500 text-white animate-pulse' :
-                                            'bg-white/10 border-white/10 text-gray-300'
+                        <div key={i} className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-xs shrink-0 border shadow-lg ${ball === 'W' ? 'bg-red-500 border-red-400 text-white' :
+                            ball.toString().includes('Wd') || ball.toString().includes('Nb') ? 'bg-yellow-500 border-yellow-400 text-black' :
+                                ball === 'B' || ball === 'Lb' ? 'bg-purple-500 border-purple-400 text-white' :
+                                    ball === 4 || ball === 6 ? 'bg-primary-600 border-primary-500 text-white animate-pulse' :
+                                        'bg-white/10 border-white/10 text-gray-300'
                             }`}>
                             {ball}
                         </div>
@@ -137,36 +139,52 @@ export default function CricketScorer({ match }) {
                 )}
             </div>
 
-            <div className="grid grid-cols-4 gap-3">
-                {[0, 1, 2, 3, 4, 6].map(run => (
-                    <button key={run} onClick={() => handleBall(run)} className="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black py-4 rounded-xl transition-all active:scale-95 shadow-lg group">
-                        <span className="group-hover:scale-110 transition-transform block">{run}</span>
+            {nbSelection ? (
+                <div className="bg-yellow-500/5 rounded-2xl p-6 border border-yellow-500/10 animate-fade-in">
+                    <div className="flex justify-between items-center mb-4">
+                        <span className="text-yellow-500 font-black text-xs tracking-widest uppercase italic">Select Runs on No-Ball</span>
+                        <button onClick={() => setNbSelection(false)} className="text-gray-500 hover:text-white text-xs font-bold uppercase tracking-widest">Cancel</button>
+                    </div>
+                    <div className="grid grid-cols-6 gap-2">
+                        {[0, 1, 2, 3, 4, 6].map(run => (
+                            <button key={run} onClick={() => handleBall('Nb', run)} className="bg-yellow-500/20 hover:bg-yellow-500/40 border border-yellow-500/20 text-yellow-500 font-black py-4 rounded-xl transition-all active:scale-95">
+                                {run}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            ) : (
+                <div className="grid grid-cols-4 gap-3">
+                    {[0, 1, 2, 3, 4, 6].map(run => (
+                        <button key={run} onClick={() => handleBall(run)} className="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black py-4 rounded-xl transition-all active:scale-95 shadow-lg group">
+                            <span className="group-hover:scale-110 transition-transform block">{run}</span>
+                        </button>
+                    ))}
+                    <button onClick={() => handleBall('Wd')} className="bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/20 text-yellow-500 font-black py-4 rounded-xl transition-all active:scale-95 text-xs">WD</button>
+                    <button onClick={() => setNbSelection(true)} className="bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/20 text-yellow-500 font-black py-4 rounded-xl transition-all active:scale-95 text-xs ring-2 ring-yellow-500/20">NB+</button>
+
+                    <button onClick={() => handleBall('B')} className="bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 font-black py-4 rounded-xl transition-all active:scale-95 text-xs">BYE</button>
+                    <button onClick={() => handleBall('Lb')} className="bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 font-black py-4 rounded-xl transition-all active:scale-95 text-xs">LBYE</button>
+
+                    <button onClick={() => handleBall('W')} className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-500 font-black py-4 rounded-xl col-span-2 transition-all active:scale-95 group">
+                        <span className="group-hover:tracking-widest transition-all">WICKET</span>
                     </button>
-                ))}
-                <button onClick={() => handleBall('Wd')} className="bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/20 text-yellow-500 font-black py-4 rounded-xl transition-all active:scale-95 text-xs">WD</button>
-                <button onClick={() => handleBall('Nb')} className="bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/20 text-yellow-500 font-black py-4 rounded-xl transition-all active:scale-95 text-xs">NB</button>
 
-                <button onClick={() => handleBall('B')} className="bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 font-black py-4 rounded-xl transition-all active:scale-95 text-xs">BYE</button>
-                <button onClick={() => handleBall('Lb')} className="bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 font-black py-4 rounded-xl transition-all active:scale-95 text-xs">LBYE</button>
-
-                <button onClick={() => handleBall('W')} className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-500 font-black py-4 rounded-xl col-span-2 transition-all active:scale-95 group">
-                    <span className="group-hover:tracking-widest transition-all">WICKET</span>
-                </button>
-
-                <button onClick={async () => {
-                    if (window.confirm("End this innings? Score will be saved as target for 2nd innings.")) {
-                        const finalScore = match.innings === 1 ? match.team1Score : match.team2Score;
-                        await updateDoc(doc(db, 'matches', match.id), {
-                            innings: match.innings === 1 ? 2 : 1,
-                            wickets: 0,
-                            currentOver: 0,
-                            ballsInOver: [],
-                            target: match.innings === 1 ? finalScore + 1 : 0,
-                            history: [] // Clear history for new innings
-                        });
-                    }
-                }} className="bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/20 text-primary-400 font-black py-4 rounded-xl col-span-2 transition-all text-xs uppercase tracking-widest">Next Innings</button>
-            </div>
+                    <button onClick={async () => {
+                        if (window.confirm("End this innings? Score will be saved as target for 2nd innings.")) {
+                            const finalScore = match.innings === 1 ? match.team1Score : match.team2Score;
+                            await updateDoc(doc(db, 'matches', match.id), {
+                                innings: match.innings === 1 ? 2 : 1,
+                                wickets: 0,
+                                currentOver: 0,
+                                ballsInOver: [],
+                                target: match.innings === 1 ? finalScore + 1 : 0,
+                                history: []
+                            });
+                        }
+                    }} className="bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/20 text-primary-400 font-black py-4 rounded-xl col-span-2 transition-all text-xs uppercase tracking-widest">Next Innings</button>
+                </div>
+            )}
         </div>
     );
 }
